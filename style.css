@@ -158,6 +158,48 @@ body {
   margin-bottom: 12px;
 }
 
+/* お任せ自動割り振りエリア */
+.auto-assign-box {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.auto-assign-box label {
+  font-size: 11px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+  color: #166534;
+}
+
+.auto-assign-box input {
+  width: 100%;
+  padding: 4px 6px;
+  font-size: 12px;
+  margin-bottom: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.auto-assign-box button {
+  width: 100%;
+  padding: 6px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.auto-assign-box button:hover {
+  background: #43a047;
+}
+
 .add-card-form {
   display: flex;
   flex-direction: column;
@@ -185,6 +227,74 @@ body {
   padding: 12px;
   margin-bottom: 12px;
   background: #fff;
+  position: relative;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+}
+
+/* メニューボタン・ドロップダウン */
+.menu-container {
+  position: relative;
+}
+
+.menu-btn {
+  border: none;
+  background: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.menu-btn:hover {
+  color: #000;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 20px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 10;
+  min-width: 80px;
+  overflow: hidden;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-menu button {
+  width: 100%;
+  padding: 6px 12px;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background: #f0f0f0;
+}
+
+.dropdown-menu button.delete-option {
+  color: #d32f2f;
+}
+
+.dropdown-menu button.delete-option:hover {
+  background: #ffebee;
 }
 
 .tag {
