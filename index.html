@@ -22,9 +22,15 @@
           </div>
         </div>
 
+        <!-- 総合達成率（バー付き） -->
         <div class="achievement-box">
           <span class="achievement-title">総合達成率</span>
-          <div class="achievement-value"><span id="totalProgress">0</span>%</div>
+          <div class="achievement-content">
+            <div class="achievement-value"><span id="totalProgress">0</span>%</div>
+            <div class="progress-bar-bg total-bar-bg">
+              <div class="progress-bar-fill" id="totalProgressBarFill" style="width: 0%;"></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -38,27 +44,45 @@
         <div class="day-row" data-day-index="5"><div class="day-label">土</div><div class="task-container drop-zone"></div></div>
         <div class="day-row" data-day-index="6"><div class="day-label">日</div><div class="task-container drop-zone"></div></div>
       </div>
+
+      <!-- ▼ ごほうびパズル解放エリア ▼ -->
+      <div class="puzzle-section">
+        <div class="puzzle-header-area">
+          <h3>🎯 ごほうびパズル（達成率でイラストがひらく！）</h3>
+          <label class="image-upload-btn">
+            📷 画像をかえる
+            <input type="file" id="puzzleImageInput" accept="image/*" style="display: none;">
+          </label>
+        </div>
+        <div class="puzzle-wrapper">
+          <div class="puzzle-image-bg" id="puzzleImageBg"></div>
+          <div class="puzzle-grid" id="puzzleGrid"></div>
+        </div>
+      </div>
+
+      <!-- ▼ 課題別達成率エリア ▼ -->
+      <div class="progress-section">
+        <h3>課題別達成率</h3>
+        <div class="progress-grid" id="progressGrid"></div>
+      </div>
     </main>
 
     <!-- サイドバー（右側：課題欄） -->
     <aside class="right-section">
       <h2>課題</h2>
 
-      <!-- お任せ自動割り振りエリア -->
       <div class="auto-assign-box">
         <label for="targetDateInput">いつまでに終わらせる？</label>
         <input type="date" id="targetDateInput">
         <button id="autoAssignBtn">🎲 お任せ自動割り振り</button>
       </div>
 
-      <!-- 課題追加フォーム -->
       <div class="add-card-form">
         <input type="text" id="subjectTitle" placeholder="教科名（例: 現代文）">
         <input type="number" id="subjectPages" placeholder="総ページ数" min="1">
         <button id="addSubjectBtn">課題を追加</button>
       </div>
 
-      <!-- 課題カード一覧 -->
       <div class="subject-list" id="subjectList"></div>
     </aside>
 
