@@ -120,15 +120,14 @@ autoAssignBtn.addEventListener('click', () => {
   const availableDates = [];
   let curr = new Date(today);
   while (curr <= targetDate) {
-    availableDates.push(formatDateKey(curr));
+    
     // 選択された休みの曜日でない場合のみ、候補日に追加
     if (!offDays.includes(curr.getDay())) {
       availableDates.push(formatDateKey(curr));
     }
     curr.setDate(curr.getDate() + 1);
   }
-  if (availableDates.length === 0) return;
-
+  
   // 割当可能な日がない場合の対応
   if (availableDates.length === 0) {
     alert('指定した期間内の対象日がすべて休みになっています！');
