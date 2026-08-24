@@ -70,7 +70,6 @@ function applyPuzzleImage(imageSrc) {
     const height = img.naturalHeight;
     const wrapper = document.querySelector('.puzzle-wrapper');
     if (wrapper) {
-      // 縦長画像（高さ >= 幅）の場合はアスペクト比を1:1(正方形)などに固定してトリミング
       if (height >= width) {
         wrapper.style.aspectRatio = '1 / 1';
       } else {
@@ -121,15 +120,23 @@ autoAssignBtn.addEventListener('click', () => {
     curr.setDate(curr.getDate() + 1);
   }
   if (availableDates.length === 0) return;
+  
+  // 未完了タスクのみ再設定
   scheduledTasks = scheduledTasks.filter(t => t.completed);
+  
   subjects.forEach(subject => {
-    const completedPages = scheduledTasks.filter(t => Number(t.subjectId) === Number(subject.id) && t.completed).reduce((sum, t) => sum + t.pages, 0);
+    const completedPages = scheduledTasks
+      .filter(t => Number(t.subjectId) === Number(subject.id) && t.completed)
+      .reduce((sum, t) => sum + t.pages, 0);
+      
     let remaining = Math.max(0, subject.totalPages - completedPages);
     if (remaining <= 0) return;
+    
     const dailyPageMap = {};
     const shuffledDates = [...availableDates].sort(() => Math.random() - 0.5);
     const basePagesPerDay = Math.max(1, Math.ceil(remaining / shuffledDates.length));
     let dateIndex = 0;
+    
     while (remaining > 0) {
       const dateKey = shuffledDates[dateIndex % shuffledDates.length];
       const randomPages = Math.min(remaining, Math.floor(Math.random() * basePagesPerDay) + 1);
@@ -138,10 +145,19 @@ autoAssignBtn.addEventListener('click', () => {
       remaining -= randomPages;
       dateIndex++;
     }
+    
     Object.keys(dailyPageMap).forEach(dateKey => {
-      scheduledTasks.push({ id: Date.now() + Math.random(), subjectId: subject.id, title: subject.title, dateKey, pages: dailyPageMap[dateKey], completed: false });
+      scheduledTasks.push({ 
+        id: Date.now() + Math.random(), 
+        subjectId: subject.id, 
+        title: subject.title, 
+        dateKey, 
+        pages: dailyPageMap[dateKey], 
+        completed: false 
+      });
     });
   });
+  
   saveData();
   render();
   alert('スケジュールを自動作成したよ！');
@@ -232,6 +248,7 @@ function renderSubjects() {
       .filter(t => Number(t.subjectId) === Number(subject.id) && t.completed)
       .reduce((sum, t) => sum + t.pages, 0);
 
+    // a = 総ページ数 - チェック済みページ数
     const remainingPages = Math.max(0, subject.totalPages - completedPages);
     const percent = Math.min(100, Math.round((completedPages / subject.totalPages) * 100));
 
@@ -239,7 +256,7 @@ function renderSubjects() {
     card.className = 'subject-card';
     card.innerHTML = `
       <div class="card-header">
-        <span class="tag ${subject.colorClass}">${subject.title}</span>
+        <span class="tag ${subject.colorClass}">${escapeHtml(subject.title)}</span>
         <div class="menu-container">
           <button class="menu-btn" data-id="${subject.id}">⋮</button>
           <div class="dropdown-menu" id="menu-${subject.id}">
@@ -249,13 +266,13 @@ function renderSubjects() {
         </div>
       </div>
       <div class="card-stats">
-        <div>達成: ${completedPages}p / ${subject.totalPages}p (${percent}%)</div>
-        <div style="font-size: 11px; color: #666; margin-top: 2px;">スケジュール済: ${assignedPages}p</div>
+        <div>残り: ${remainingPages}p / 全 ${subject.totalPages}p (${percent}%)</div>
+        <div style="font-size: 11px; color: #666; margin-top: 2px;">割り当て済み: ${assignedPages}p</div>
       </div>
       <div class="drag-item" draggable="true" data-subject-id="${subject.id}">
         <span class="drag-handle-label">⠿ 掴んで枠へポイ</span>
         <div>
-          <input type="number" class="page-input" placeholder="p数" min="1" max="${remainingPages}" style="width: 45px;">
+          <input type="number" class="page-input" value="5" min="1" max="${remainingPages || 1}" style="width: 45px;">
           <span style="font-size:11px;">p</span>
         </div>
       </div>
@@ -297,9 +314,9 @@ function renderSchedule() {
       taskEl.setAttribute('data-task-id', task.id);
       taskEl.innerHTML = `
         <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-          <label>
+          <label style="cursor:pointer;">
             <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})">
-            ${task.title}
+            ${escapeHtml(task.title)}
           </label>
           <button onclick="removeTask(${task.id})" style="border:none; background:none; cursor:pointer; color:#888; font-size:10px; margin-left:4px;">✕</button>
         </div>
@@ -319,13 +336,15 @@ function renderProgressBars() {
     return;
   }
   subjects.forEach(subject => {
-    const completedPages = scheduledTasks.filter(t => Number(t.subjectId) === Number(subject.id) && t.completed).reduce((sum, t) => sum + t.pages, 0);
+    const completedPages = scheduledTasks
+      .filter(t => Number(t.subjectId) === Number(subject.id) && t.completed)
+      .reduce((sum, t) => sum + t.pages, 0);
     const percent = Math.min(100, Math.round((completedPages / subject.totalPages) * 100));
     const item = document.createElement('div');
     item.className = 'progress-item';
     item.innerHTML = `
       <div class="progress-info">
-        <span>${subject.title}</span>
+        <span>${escapeHtml(subject.title)}</span>
         <span>${percent}% (${completedPages}/${subject.totalPages}p)</span>
       </div>
       <div class="progress-bar-bg">
@@ -340,6 +359,7 @@ function setupDragAndDrop() {
   const dragItems = document.querySelectorAll('.drag-item');
   const scheduleTasks = document.querySelectorAll('.schedule-task');
   const dropZones = document.querySelectorAll('.drop-zone');
+  
   dragItems.forEach(item => {
     item.ondragstart = (e) => {
       const subjectId = item.getAttribute('data-subject-id');
@@ -348,6 +368,7 @@ function setupDragAndDrop() {
       e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'new-task', subjectId: parseInt(subjectId, 10), pages: pages }));
     };
   });
+  
   scheduleTasks.forEach(taskEl => {
     taskEl.ondragstart = (e) => {
       const taskId = taskEl.getAttribute('data-task-id');
@@ -355,6 +376,7 @@ function setupDragAndDrop() {
       e.stopPropagation();
     };
   });
+  
   if (!isDropZoneSetup) {
     dropZones.forEach(zone => {
       zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
@@ -370,12 +392,24 @@ function setupDragAndDrop() {
         if (data.type === 'new-task') {
           const subject = subjects.find(s => Number(s.id) === Number(data.subjectId));
           if (subject) {
-            scheduledTasks.push({ id: Date.now(), subjectId: subject.id, title: subject.title, dateKey: targetDateKey, pages: data.pages, completed: false });
-            saveData(); render();
+            scheduledTasks.push({ 
+              id: Date.now(), 
+              subjectId: subject.id, 
+              title: subject.title, 
+              dateKey: targetDateKey, 
+              pages: data.pages, 
+              completed: false 
+            });
+            saveData(); 
+            render();
           }
         } else if (data.type === 'move-task') {
           const task = scheduledTasks.find(t => Number(t.id) === Number(data.taskId));
-          if (task) { task.dateKey = targetDateKey; saveData(); render(); }
+          if (task) { 
+            task.dateKey = targetDateKey; 
+            saveData(); 
+            render(); 
+          }
         }
       });
     });
@@ -391,15 +425,13 @@ window.editSubject = function(subjectId) {
   const newPages = parseInt(newPagesStr, 10);
   if (isNaN(newPages) || newPages <= 0) { alert('正しいページ数を入力してください！'); return; }
   subject.totalPages = newPages;
-  saveData(); render();
+  saveData(); 
+  render();
 };
 
 window.deleteSubject = function(subjectId) {
   const subject = subjects.find(s => String(s.id) === String(subjectId));
-  if (!subject) {
-    alert('対象の課題が見つかりませんでした。');
-    return;
-  }
+  if (!subject) return;
   if (confirm(`「${subject.title}」を削除しますか？\n（関連するスケジュールも消去されます）`)) {
     subjects = subjects.filter(s => String(s.id) !== String(subjectId));
     scheduledTasks = scheduledTasks.filter(t => String(t.subjectId) !== String(subjectId));
@@ -410,12 +442,17 @@ window.deleteSubject = function(subjectId) {
 
 window.toggleTask = function(taskId) {
   const task = scheduledTasks.find(t => Number(t.id) === Number(taskId));
-  if (task) { task.completed = !task.completed; saveData(); render(); }
+  if (task) { 
+    task.completed = !task.completed; 
+    saveData(); 
+    render(); 
+  }
 };
 
 window.removeTask = function(taskId) {
   scheduledTasks = scheduledTasks.filter(t => Number(t.id) !== Number(taskId));
-  saveData(); render();
+  saveData(); 
+  render();
 };
 
 function calculateTotalProgress() {
@@ -446,6 +483,15 @@ function loadData() {
   if (savedSubjects) subjects = JSON.parse(savedSubjects);
   if (savedTasks) scheduledTasks = JSON.parse(savedTasks);
   if (savedIndices) puzzleIndices = JSON.parse(savedIndices);
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 render();
