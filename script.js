@@ -113,13 +113,31 @@ autoAssignBtn.addEventListener('click', () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   if (isNaN(targetDate.getTime()) || targetDate < today) { alert('今日以降の日付を選んでね！'); return; }
+
+  // ▼ チェックされた「割り振らない曜日（0=日, 1=月 ... 6=土）」を取得 ▼
+  const offDays = Array.from(document.querySelectorAll('.off-day-check:checked')).map(cb => parseInt(cb.value, 10));
+
   const availableDates = [];
   let curr = new Date(today);
   while (curr <= targetDate) {
     availableDates.push(formatDateKey(curr));
+    // 選択された休みの曜日でない場合のみ、候補日に追加
+    if (!offDays.includes(curr.getDay())) {
+      availableDates.push(formatDateKey(curr));
+    }
     curr.setDate(curr.getDate() + 1);
   }
   if (availableDates.length === 0) return;
+
+  // 割当可能な日がない場合の対応
+  if (availableDates.length === 0) {
+    alert('指定した期間内の対象日がすべて休みになっています！');
+    return;
+  }
+
+ 
+
+
   
   // 未完了タスクのみ再設定
   scheduledTasks = scheduledTasks.filter(t => t.completed);

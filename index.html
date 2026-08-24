@@ -74,6 +74,20 @@
       <div class="auto-assign-box">
         <label for="targetDateInput">いつまでに終わらせる？</label>
         <input type="date" id="targetDateInput">
+
+                <!-- ▼ ここを追加: 割り振らない曜日を選択するUI ▼ -->
+        <label style="margin-top: 8px;">割り振らない曜日（休み）</label>
+        <div class="off-days-selector" style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px;">
+          <label style="font-weight: normal; font-size: 11px;"><input type="checkbox" class="off-day-check" value="1"> 月</label>
+          <label style="font-weight: normal; font-size: 11px;"><input type="checkbox" class="off-day-check" value="2"> 火</label>
+          <label style="font-weight: normal; font-size: 11px;"><input type="checkbox" class="off-day-check" value="3"> 水</label>
+          <label style="font-weight: normal; font-size: 11px;"><input type="checkbox" class="off-day-check" value="4"> 木</label>
+          <label style="font-weight: normal; font-size: 11px;"><input type="checkbox" class="off-day-check" value="5"> 金</label>
+          <label style="font-weight: normal; font-size: 11px;"><input type="checkbox" class="off-day-check" value="6"> 土</label>
+          <label style="font-weight: normal; font-size: 11px;"><input type="checkbox" class="off-day-check" value="0"> 日</label>
+        </div>
+        <!-- ▲ ここまで ▲ -->
+
         <button id="autoAssignBtn">🎲 お任せ自動割り振り</button>
       </div>
 
