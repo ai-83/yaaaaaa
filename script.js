@@ -69,7 +69,14 @@ function applyPuzzleImage(imageSrc) {
     const width = img.naturalWidth;
     const height = img.naturalHeight;
     const wrapper = document.querySelector('.puzzle-wrapper');
-    if (wrapper) wrapper.style.aspectRatio = `${width} / ${height}`;
+    if (wrapper) {
+      // 縦長画像（高さ >= 幅）の場合はアスペクト比を1:1(正方形)などに固定してトリミング
+      if (height >= width) {
+        wrapper.style.aspectRatio = '1 / 1';
+      } else {
+        wrapper.style.aspectRatio = `${width} / ${height}`;
+      }
+    }
     puzzleImageBg.style.backgroundImage = `url('${imageSrc}')`;
   };
 }
