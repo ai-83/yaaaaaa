@@ -1,0 +1,239 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  background-color: #ffffff;
+  color: #333;
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.app-container {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  max-width: 950px;
+}
+
+/* --- 左側エリア --- */
+.left-section {
+  flex: 2;
+}
+
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.month-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.week-selector {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 4px 12px;
+  background: #fff;
+  font-size: 14px;
+}
+
+.week-selector .nav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0 8px;
+}
+
+.achievement-box {
+  border: 1px solid #a2d2c1;
+  background: #f4fbf8;
+  border-radius: 12px;
+  padding: 10px 25px;
+  text-align: center;
+}
+
+.achievement-title {
+  font-size: 12px;
+  font-weight: bold;
+  display: block;
+}
+
+.achievement-value {
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+/* 週間スケジュール表 */
+.weekly-schedule {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.day-row {
+  display: flex;
+  height: 60px;
+}
+
+.day-label {
+  width: 50px;
+  background: #f0f0f0;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px 0 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+}
+
+.task-container {
+  flex: 1;
+  background: #f9f9f9;
+  border: 1px solid #dcdcdc;
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+  padding: 6px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  overflow-x: auto;
+  transition: background-color 0.2s ease;
+}
+
+/* ドラッグ領域の上にマウスが乗ったときの効果 */
+.task-container.drag-over {
+  background-color: #e8f5e9;
+  border-color: #81c784;
+}
+
+.schedule-task {
+  border: 1px solid #e57373;
+  background: #fff;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 90px;
+}
+
+.schedule-task.completed {
+  background: #f0f0f0;
+  border-color: #ccc;
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.schedule-task label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* --- 右側（課題欄） --- */
+.right-section {
+  flex: 1;
+  max-width: 280px;
+}
+
+.right-section h2 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.add-card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+
+.add-card-form input, .add-card-form button {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.add-card-form button {
+  background: #333;
+  color: white;
+  cursor: pointer;
+}
+
+/* 課題カード */
+.subject-card {
+  border: 1.5px solid #888;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #fff;
+}
+
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.tag-pink { background-color: #ffcdd2; color: #880e4f; }
+.tag-blue { background-color: #bbdefb; color: #0d47a1; }
+.tag-green { background-color: #c8e6c9; color: #1b5e20; }
+.tag-purple { background-color: #e1bee7; color: #4a148c; }
+
+.card-stats {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* ドラッグ可能なハンドル要素 */
+.drag-item {
+  background: #f0f4f8;
+  border: 1px dashed #007bff;
+  border-radius: 6px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: grab;
+  user-select: none;
+}
+
+.drag-item:active {
+  cursor: grabbing;
+}
+
+.drag-item input {
+  width: 50px;
+  padding: 2px 4px;
+  font-size: 11px;
+}
+
+.drag-handle-label {
+  font-size: 11px;
+  color: #007bff;
+  font-weight: bold;
+}

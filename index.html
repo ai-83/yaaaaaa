@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学習スケジュール管理</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- メインエリア（左側） -->
+    <main class="left-section">
+      <!-- ヘッダーエリア -->
+      <div class="top-header">
+        <div class="header-left">
+          <h1 class="month-title">8月</h1>
+          <div class="week-selector">
+            <button class="nav-btn">&lt;</button>
+            <span>1日 〜 7日</span>
+            <button class="nav-btn">&gt;</button>
+          </div>
+        </div>
+
+        <div class="achievement-box">
+          <span class="achievement-title">総合達成率</span>
+          <div class="achievement-value"><span id="totalProgress">0</span>%</div>
+        </div>
+      </div>
+
+      <!-- 週間スケジュール（縦並び） -->
+      <div class="weekly-schedule">
+        <div class="day-row" data-day-index="0"><div class="day-label">月</div><div class="task-container drop-zone"></div></div>
+        <div class="day-row" data-day-index="1"><div class="day-label">火</div><div class="task-container drop-zone"></div></div>
+        <div class="day-row" data-day-index="2"><div class="day-label">水</div><div class="task-container drop-zone"></div></div>
+        <div class="day-row" data-day-index="3"><div class="day-label">木</div><div class="task-container drop-zone"></div></div>
+        <div class="day-row" data-day-index="4"><div class="day-label">金</div><div class="task-container drop-zone"></div></div>
+        <div class="day-row" data-day-index="5"><div class="day-label">土</div><div class="task-container drop-zone"></div></div>
+        <div class="day-row" data-day-index="6"><div class="day-label">日</div><div class="task-container drop-zone"></div></div>
+      </div>
+    </main>
+
+    <!-- サイドバー（右側：課題欄） -->
+    <aside class="right-section">
+      <h2>課題</h2>
+
+      <!-- 課題追加フォーム -->
+      <div class="add-card-form">
+        <input type="text" id="subjectTitle" placeholder="教科名（例: 現代文）">
+        <input type="number" id="subjectPages" placeholder="総ページ数" min="1">
+        <button id="addSubjectBtn">課題を追加</button>
+      </div>
+
+      <!-- 課題カード一覧 -->
+      <div class="subject-list" id="subjectList"></div>
+    </aside>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
