@@ -1,0 +1,210 @@
+
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カレンダー</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="calendar-container">
+        <!-- カレンダーのヘッダー（年月表示と移動ボタン） -->
+        <div class="calendar-header">
+            <button id="prevBtn">◀ 前の月</button>
+            <h2 id="yearMonthTitle">202X年 X月</h2>
+            <button id="nextBtn">次の月 ▶</button>
+        </div>
+
+        <!-- カレンダーの本体 -->
+        <div class="calendar-grid">
+            <!-- 曜日表示（日〜土） -->
+            <div class="day-of-week sunday">日</div>
+            <div class="day-of-week">月</div>
+            <div class="day-of-week">火</div>
+            <div class="day-of-week">水</div>
+            <div class="day-of-week">木</div>
+            <div class="day-of-week">金</div>
+            <div class="day-of-week saturday">土</div>
+
+            <!-- ここにJavaScriptで日付（1〜31など）が自動で入ります -->
+            <div id="calendarDays" class="calendar-days-container"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+```
+
+---
+
+### 2. CSSコード (`style.css`)
+カレンダーを綺麗な格子状（グリッド）に並べるためのデザインです。
+
+```css
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f2f5;
+}
+
+.calendar-container {
+    background-color: white;
+    width: 350px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* ヘッダー（年月とボタン）の配置 */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-header button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.calendar-header button:hover {
+    background-color: #0056b3;
+}
+
+/* 7列のグリッドを作る */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    text-align: center;
+}
+
+/* 曜日と日付の共通スタイル */
+.day-of-week, .day {
+    padding: 10px 0;
+    font-weight: bold;
+}
+
+/* 曜日の色分け */
+.sunday { color: red; }
+.saturday { color: blue; }
+
+/* 日付を入れるコンテナも7列のグリッドにする */
+.calendar-days-container {
+    grid-column: span 7;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+/* 日付単体のスタイル */
+.day {
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.2s;
+}
+
+.day:hover {
+    background-color: #e2e6ea;
+}
+
+/* 今日の日付を目立たせる */
+.today {
+    background-color: #ffeb3b !important;
+    border-radius: 50%;
+}
+
+/* 空白のマス（先月や来月のズレを調整する用） */
+.empty {
+    visibility: hidden;
+}
+```
+
+---
+
+### 3. JavaScriptコード (`script.js`)
+現在の日付を取得し、カレンダーの1日が何曜日から始まるかを計算して、自動で日付を生成するプログラムです。
+
+```javascript
+const yearMonthTitle = document.querySelector("#yearMonthTitle");
+const calendarDays = document.querySelector("#calendarDays");
+const prevBtn = document.querySelector("#prevBtn");
+const nextBtn = document.querySelector("#nextBtn");
+
+// 現在の「年」と「月」を取得して保持する
+let today = new Date();
+let currentYear = today.getFullYear();
+let currentMonth = today.getMonth(); // 0が1月、11が12月
+
+// カレンダーを表示するメインの関数
+function createCalendar(year, month) {
+    // タイトルを更新（例：2023年 10月）
+    yearMonthTitle.textContent = `${year}年 ${month + 1}月`;
+
+    // 表示する月の情報を取得
+    const firstDay = new Date(year, month, 1).getDay(); // 1日の曜日 (0:日〜6:土)
+    const lastDate = new Date(year, month + 1, 0).getDate(); // 今月の末日 (例: 30や31)
+
+    // 一旦カレンダーの中身を空にする
+    calendarDays.innerHTML = "";
+
+    // 1. 1日の曜日より前の空白マスを作る
+    for (let i = 0; i < firstDay; i++) {
+        const emptyDiv = document.createElement("div");
+        emptyDiv.classList.add("empty");
+        calendarDays.appendChild(emptyDiv);
+    }
+
+    // 2. 日付のマスを作る（1日〜末日まで）
+    for (let date = 1; date <= lastDate; date++) {
+        const dayDiv = document.createElement("div");
+        dayDiv.classList.add("day");
+        dayDiv.textContent = date;
+
+        // もし「今年」「今月」「今日」なら、目立つクラス(today)をつける
+        if (year === today.getFullYear() && month === today.getMonth() && date === today.getDate()) {
+            dayDiv.classList.add("today");
+        }
+
+        calendarDays.appendChild(dayDiv);
+    }
+}
+
+// 前の月へ移動する関数
+function prevMonth() {
+    currentMonth--;
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    }
+    createCalendar(currentYear, currentMonth);
+}
+
+// 次の月へ移動する関数
+function nextMonth() {
+    currentMonth++;
+    if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+    createCalendar(currentYear, currentMonth);
+}
+
+// ボタンにクリックイベントを設定
+prevBtn.addEventListener("click", prevMonth);
+nextBtn.addEventListener("click", nextMonth);
+
+// 最初にページを開いたときにカレンダーを表示する
+createCalendar(currentYear, currentMonth);
+```
